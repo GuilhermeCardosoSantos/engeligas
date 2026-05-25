@@ -139,7 +139,7 @@ const AppSidebar: React.FC = () => {
                   className={`ml-auto w-5 h-5 transition-transform duration-200  ${
                     openSubmenu?.type === menuType &&
                     openSubmenu?.index === index
-                      ? "rotate-180 text-brand-500"
+                      ? "rotate-180 "
                       : ""
                   }`}
                 />
@@ -333,8 +333,8 @@ const AppSidebar: React.FC = () => {
             <Image
               src="/images/logo/logoBalde3.png"
               alt="Logo"
-              width={38}
-              height={38}
+              width={30}
+              height={30}
             />
           )}
         </Link>
@@ -345,7 +345,7 @@ const AppSidebar: React.FC = () => {
             {/* menu */}
             <div>
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"
