@@ -3,6 +3,22 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+
+  /* my edit */
+
+  --color-engeligas-50: #fff7ed;
+  --color-engeligas-100: #ffedd5;
+  --color-engeligas-200: #fed7aa;
+  --color-engeligas-300: #fdba74;
+  --color-engeligas-400: #fb923c;
+  --color-engeligas-500: #f97316;
+  --color-engeligas-600: #ea580c;
+  --color-engeligas-700: #c2410c;
+  --color-engeligas-800: #9a3412;
+  --color-engeligas-900: #7c2d12;
+
+  /* my edit */
+
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;
 
@@ -750,3 +766,6 @@ span.flatpickr-weekday,
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
+
+
+/*  */
