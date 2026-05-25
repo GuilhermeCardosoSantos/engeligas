@@ -14,7 +14,7 @@ import {
   PageIcon,
   PieChartIcon,
   PlugInIcon,
-  TableIcon,
+  UserIcon,
   UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
@@ -27,19 +27,58 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [
-      { name: "Início", path: "/home",  pro:true},
-      { name: "Usuários", path: "/users", pro:true },
-      { name: "Grupos", path: "/groups", pro:true },
-    ],
-  },
+  // {
+  //   icon: <GridIcon />,
+  //   name: "Dashboard",
+  //   subItems: [
+  //     { name: "Início", path: "/home",  pro:true},
+  //   ],
+  // },
+  // {
+  //   icon: <UserIcon />,
+  //   name: "Usuários",
+  //   subItems: [
+  //     { name: "Contas", path: "/users",  pro:true},
+  //     { name: "Grupos", path: "/groups", pro:true },
+  //     { name: "Cargo", path: "/", pro:true },
+  //   ],
+  // },
   {
     icon: <DocsIcon />,
     name: "Ordem de serviço",
     path: "/os",
+  },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "User Profile",
+  //   path: "/profile",
+  // },
+
+  // {
+  //   name: "Forms",
+  //   icon: <ListIcon />,
+  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+  // },
+  // {
+  //   name: "Tables",
+  //   icon: <TableIcon />,
+  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  // },
+  // {
+  //   name: "Pages",
+  //   icon: <PageIcon />,
+  //   subItems: [
+  //     { name: "Blank Page", path: "/blank", pro: false },
+  //     { name: "404 Error", path: "/error-404", pro: false },
+  //   ],
+  // },
+];
+
+const adminItems: NavItem[] = [
+  {
+    icon: <UserIcon />,
+    name: "Usuários",
+    path: "/users"
   },
   // {
   //   icon: <UserCircleIcon />,
@@ -229,7 +268,7 @@ const AppSidebar: React.FC = () => {
   );
 
   const [openSubmenu, setOpenSubmenu] = useState<{
-    type: "main" | "others";
+    type: "main" | "others" | "admin";
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
@@ -243,14 +282,14 @@ const AppSidebar: React.FC = () => {
   useEffect(() => {
     // Check if the current path matches any submenu item
     let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
+    ["main", "admin"].forEach((menuType) => {
+      const items = menuType === "main" ? navItems : adminItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
               setOpenSubmenu({
-                type: menuType as "main" | "others",
+                type: menuType as "main" | "admin" | "others",
                 index,
               });
               submenuMatched = true;
@@ -342,6 +381,23 @@ const AppSidebar: React.FC = () => {
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
+            {/* admin */}
+            <div>
+              <h2
+                className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${
+                  !isExpanded && !isHovered
+                    ? "lg:justify-center"
+                    : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Admin"
+                ) : (
+                  <HorizontaLDots />
+                )}
+              </h2>
+              {renderMenuItems(adminItems, "main")}
+            </div>
             {/* menu */}
             <div>
               <h2

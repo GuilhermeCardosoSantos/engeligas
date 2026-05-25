@@ -15,7 +15,6 @@ export default function SignInForm() {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleSignIn = () => {
-    console.log("aqui")
     router.push("/home");
   };
 
