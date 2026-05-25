@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 480" width="100%" height="100%">
+  <defs>
+    <!-- Gradiente para o brilho/reflexo no texto -->
+    <linearGradient id="gloss" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35" />
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.0" />
+    </linearGradient>
+    
+    <!-- Sombra suave no texto -->
+    <filter id="shadow" x="-5%" y="-5%" width="120%" height="150%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#3d1a0a" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- ================= PARTE SUPERIOR: CÍRCULO E LAVA ================= -->
+  <g id="graphic-top">
+    <!-- Círculo externo com borda escura -->
+    <circle cx="500" cy="120" r="90" fill="#dcdcdc" stroke="#4a362b" stroke-width="18" />
+    
+    <!-- Laranja dentro do círculo (fundo da parte inferior) -->
+    <path d="M 412 130 
+             C 412 160, 440 190, 465 200
+             C 480 205, 500 208, 500 208
+             C 500 208, 520 205, 535 200
+             C 560 190, 588 160, 588 130
+             Z" 
+          fill="#f28e1c" />
+          
+    <!-- Pescoço da lava descendo -->
+    <path d="M 465 195 
+             C 475 210, 485 220, 490 240
+             L 510 240
+             C 515 220, 525 210, 535 195
+             Z" 
+          fill="#f28e1c" />
+  </g>
+
+  <!-- ================= RESPINGO / SPLASH (SOBRE O TEXTO) ================= -->
+  <g id="splash">
+    <!-- Respingo central -->
+    <path d="M 490 240 L 495 280 L 500 300 L 505 280 L 510 240 Z" fill="#f28e1c" />
+    
+    <!-- Respingos laterais (formato de leque/explosão) -->
+    <path d="M 495 260 L 440 285 L 445 275 L 465 265 Z" fill="#f28e1c" />
+    <path d="M 505 260 L 560 285 L 555 275 L 535 265 Z" fill="#f28e1c" />
+    
+    <!-- Respingos menores espalhados -->
+    <circle cx="450" cy="290" r="5" fill="#f28e1c" />
+    <circle cx="550" cy="290" r="5" fill="#f28e1c" />
+    <circle cx="470" cy="305" r="4" fill="#f28e1c" />
+    <circle cx="530" cy="305" r="4" fill="#f28e1c" />
+    <circle cx="435" cy="275" r="3" fill="#f28e1c" />
+    <circle cx="565" cy="275" r="3" fill="#f28e1c" />
+    
+    <!-- Respingo horizontal fino no meio do splash -->
+    <path d="M 480 285 L 520 285" stroke="#f28e1c" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <!-- ================= TEXTO "ENGELIGAS" ================= -->
+  <g id="logo-text" filter="url(#shadow)">
+    <!-- Contorno grosso marrom escuro -->
+    <text x="500" y="420" font-family="Arial, Helvetica, sans-serif" font-size="155" font-weight="900" fill="#6e311c" stroke="#562310" stroke-width="20" stroke-linejoin="round" text-anchor="middle" letter-spacing="3">
+      ENGELIGAS
+    </text>
+
+    <!-- Preenchimento laranja -->
+    <text x="500" y="420" font-family="Arial, Helvetica, sans-serif" font-size="155" font-weight="900" fill="#f28e1c" text-anchor="middle" letter-spacing="3">
+      ENGELIGAS
+    </text>
+
+    <!-- Reflexo brilhante no topo das letras -->
+    <text x="500" y="420" font-family="Arial, Helvetica, sans-serif" font-size="155" font-weight="900" fill="url(#gloss)" text-anchor="middle" letter-spacing="3">
+      ENGELIGAS
+    </text>
+  </g>
+</svg>

@@ -16,7 +16,7 @@ export default function AuthLayout({
       <ThemeProvider>
         <div className="relative flex lg:flex-row w-full h-screen justify-center flex-col  dark:bg-gray-900 sm:p-0">
           {children}
-          <div className="lg:w-1/2 w-full h-full bg-[#1B1B1F] dark:bg-white/5 lg:grid items-center hidden">
+          <div className="lg:w-1/2 w-full h-full bg-gray-100  dark:bg-white/5 lg:grid items-center hidden">
             <div className="relative items-center justify-center  flex z-1">
               {/* <!-- ===== Common Grid Shape Start ===== --> */}
               <GridShape />
@@ -30,7 +30,8 @@ export default function AuthLayout({
                   />
                 </Link>
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  Free and Open-Source Tailwind CSS Admin Dashboard Template
+                  Plataforma interna ENGELIGAS para gestão,
+                  controle e acompanhamento operacional.
                 </p>
               </div>
             </div>

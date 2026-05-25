@@ -1,13 +1,13 @@
 "use client";
-import { useTheme } from "@/context/ThemeContext";
 import React from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function ThemeTogglerTwo() {
   const { toggleTheme } = useTheme();
   return (
     <button
       onClick={toggleTheme}
-      className="inline-flex size-14 items-center justify-center rounded-full bg-engeligas-500 text-[#1B1B1F] transition-colors hover:bg-engeligas-600"
+      className="inline-flex size-14 items-center justify-center rounded-full bg-engeligas-500 text-white dark:text-black transition-colors hover:bg-engeligas-600"
     >
       <svg
         className="hidden dark:block"
