@@ -1,8 +1,6 @@
 "use client";
 
-import { Plus, Search } from "lucide-react";
-
-import Button from "../ui/button/Button";
+import { Search } from "lucide-react";
 
 type Props = {
   search: string;
@@ -16,6 +14,12 @@ type Props = {
   setFilter: React.Dispatch<
     React.SetStateAction<string>
   >;
+
+  column: string;
+
+  setColumn: React.Dispatch<
+    React.SetStateAction<string>
+  >;
 };
 
 export default function OSSearch({
@@ -23,7 +27,24 @@ export default function OSSearch({
   setSearch,
   filter,
   setFilter,
+  column,
+  setColumn,
 }: Props) {
+  const columnLabels: Record<
+    string,
+    string
+  > = {
+    all: "OS",
+    id: "OS",
+    item: "Item",
+    client: "Cliente",
+    seller: "Vendedor",
+    order: "Pedido",
+    status: "Status",
+    alloy: "Liga",
+    purpose: "Finalidade",
+  };
+
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
@@ -42,47 +63,52 @@ export default function OSSearch({
         {/* RIGHT */}
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          {/* FILTER */}
+          {/* COLUMN */}
 
           <select
-            value={filter}
+            value={column}
             onChange={(e) =>
-              setFilter(e.target.value)
+              setColumn(e.target.value)
             }
             className="h-11 rounded-xl border border-gray-300 bg-transparent px-4 text-sm outline-none transition focus:border-engeligas-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
           >
-            <option value="">
-              Todos
+            <option value="all">
+              Todas colunas
             </option>
 
-            <option value="EM ATRASO">
-              Em atraso
+            <option value="id">
+              OS
             </option>
 
-            <option value="ALERTA">
-              Alerta
+            <option value="item">
+              Item
             </option>
 
-            <option value="EM ABERTO">
-              Em aberto
+            <option value="client">
+              Cliente
             </option>
 
-            <option value="BRONZE">
-              Bronze
+            <option value="seller">
+              Vendedor
             </option>
 
-            <option value="LATÃO">
-              Latão
+            <option value="order">
+              Pedido
             </option>
 
-            <option value="VENDA">
-              Venda
+            <option value="status">
+              Status
             </option>
 
-            <option value="ESTOQUE">
-              Estoque
+            <option value="alloy">
+              Liga
+            </option>
+
+            <option value="purpose">
+              Finalidade
             </option>
           </select>
+
 
           {/* SEARCH */}
 
@@ -91,7 +117,7 @@ export default function OSSearch({
 
             <input
               type="text"
-              placeholder="Buscar OS..."
+              placeholder={`Buscar ...`}
               value={search}
               onChange={(e) =>
                 setSearch(e.target.value)
@@ -99,7 +125,6 @@ export default function OSSearch({
               className="h-11 w-full rounded-xl border border-gray-300 bg-transparent pl-11 pr-4 text-sm outline-none transition focus:border-engeligas-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white sm:w-[320px]"
             />
           </div>
-
         </div>
       </div>
     </div>

@@ -2,7 +2,11 @@
 
 import * as React from "react";
 
+import Link from "next/link";
+
 import { MoveRight } from "lucide-react";
+
+import Button from "../ui/button/Button";
 
 import {
   ColumnDef,
@@ -12,10 +16,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import Link from "next/link";
-
-import Button from "../ui/button/Button";
-
 import {
   Table,
   TableBody,
@@ -23,6 +23,11 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+
+type Props = {
+  search: string;
+  filter: string;
+};
 
 type ServiceOrder = {
   id: number;
@@ -91,7 +96,7 @@ const serviceOrders: ServiceOrder[] = [
     expectedDate: "25/05/2026",
     status: "EM ABERTO",
     weight: "83,41",
-    purpose: "VENDA",
+    purpose: "ESTOQUE",
     alloy: "BRONZE",
   },
 ];
@@ -125,7 +130,66 @@ function getAlloyClass(alloy: string) {
   }
 }
 
-export default function ServiceOrderTable() {
+export default function OsTable({
+  search,
+  filter,
+}: Props) {
+  const filteredOrders =
+  React.useMemo(() => {
+    const searchLower =
+      search.toLowerCase();
+
+    return serviceOrders.filter(
+      (order) => {
+        const matchesSearch =
+          order.id
+            .toString()
+            .includes(searchLower) ||
+          order.item
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.client
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.seller
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.order
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.issueDate
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.expectedDate
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.status
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.weight
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.purpose
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.alloy
+            .toLowerCase()
+            .includes(searchLower);
+
+        const matchesFilter =
+          filter === ""
+            ? true
+            : order.status === filter ||
+              order.alloy === filter ||
+              order.purpose === filter;
+
+        return (
+          matchesSearch &&
+          matchesFilter
+        );
+      }
+    );
+  }, [search, filter]);
   const columns: ColumnDef<ServiceOrder>[] = [
     {
       accessorKey: "id",
@@ -288,7 +352,7 @@ export default function ServiceOrderTable() {
   ];
 
   const table = useReactTable({
-    data: serviceOrders,
+    data: filteredOrders,
 
     columns,
 
@@ -300,67 +364,83 @@ export default function ServiceOrderTable() {
   });
 
   return (
-    <div className="overflow-x-auto overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-      <Table>
-        {/* HEADER */}
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="overflow-x-auto">
+        <Table>
+          {/* HEADER */}
 
-        <TableHeader className="border-b border-gray-100 dark:border-white/5">
-          {table
-            .getHeaderGroups()
-            .map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(
-                  (header) => (
-                    <TableCell
-                      key={header.id}
-                      isHeader
-                      className="whitespace-nowrap px-5 py-4 text-start text-theme-sm font-medium text-gray-500 dark:text-gray-400"
-                    >
-                      {flexRender(
-                        header.column
-                          .columnDef.header,
-                        header.getContext()
-                      )}
-                    </TableCell>
-                  )
-                )}
-              </TableRow>
-            ))}
-        </TableHeader>
+          <TableHeader className="border-b border-gray-100 dark:border-white/5">
+            {table
+              .getHeaderGroups()
+              .map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map(
+                    (header) => (
+                      <TableCell
+                        key={header.id}
+                        isHeader
+                        className="whitespace-nowrap px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                      >
+                        {flexRender(
+                          header.column
+                            .columnDef.header,
+                          header.getContext()
+                        )}
+                      </TableCell>
+                    )
+                  )}
+                </TableRow>
+              ))}
+          </TableHeader>
 
-        {/* BODY */}
+          {/* BODY */}
 
-        <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
-          {table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              className="transition hover:bg-gray-50 dark:hover:bg-white/2"
-            >
-              {row
-                .getVisibleCells()
-                .map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className="whitespace-nowrap px-5 py-4"
+          <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
+            {table.getRowModel().rows.length >
+            0 ? (
+              table
+                .getRowModel()
+                .rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="transition hover:bg-gray-50 dark:hover:bg-white/[0.02]"
                   >
-                    {flexRender(
-                      cell.column
-                        .columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                    {row
+                      .getVisibleCells()
+                      .map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className="whitespace-nowrap px-4 py-3 text-sm"
+                        >
+                          {flexRender(
+                            cell.column
+                              .columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                  </TableRow>
+                ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="h-32 text-center text-gray-500 dark:text-gray-400"
+                >
+                  Nenhuma ordem de serviço encontrada.
+                </td>
+              </tr>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* FOOTER */}
 
       <div className="flex flex-col gap-3 border-t border-gray-100 px-5 py-4 dark:border-white/5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Total de OS:{" "}
-          {serviceOrders.length}
+          {filteredOrders.length}
         </p>
 
         <div className="flex items-center gap-2">

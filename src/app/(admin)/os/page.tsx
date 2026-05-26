@@ -3,7 +3,8 @@
 import * as React from "react";
 
 import OSSearch from "@/components/os/OSSearch";
-import OsForm from "@/components/os/OsTable";
+import OsTable from "@/components/os/OsTable";
+
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 
 export default function OS() {
@@ -15,7 +16,8 @@ export default function OS() {
 
   return (
     <div className="space-y-6">
-        <PageBreadcrumb pageTitle={"Ordem de serviço"} />
+      <PageBreadcrumb pageTitle="Ordem de serviço" />
+
       <OSSearch
         search={search}
         setSearch={setSearch}
@@ -23,7 +25,10 @@ export default function OS() {
         setFilter={setFilter}
       />
 
-      <OsForm />
+      <OsTable
+        search={search}
+        filter={filter}
+      />
     </div>
   );
 }
