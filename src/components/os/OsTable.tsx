@@ -27,6 +27,7 @@ import {
 type Props = {
   search: string;
   filter: string;
+  column: string;
 };
 
 type ServiceOrder = {
@@ -133,6 +134,7 @@ function getAlloyClass(alloy: string) {
 export default function OsTable({
   search,
   filter,
+  column
 }: Props) {
   const filteredOrders =
   React.useMemo(() => {
@@ -378,7 +380,6 @@ export default function OsTable({
                     (header) => (
                       <TableCell
                         key={header.id}
-                        isHeader
                         className="whitespace-nowrap px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
                       >
                         {flexRender(

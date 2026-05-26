@@ -14,6 +14,9 @@ export default function OS() {
   const [filter, setFilter] =
     React.useState("");
 
+  const [column, setColumn] =
+    React.useState("all");
+
   return (
     <div className="space-y-6">
       <PageBreadcrumb pageTitle="Ordem de serviço" />
@@ -23,11 +26,14 @@ export default function OS() {
         setSearch={setSearch}
         filter={filter}
         setFilter={setFilter}
+        column={column}
+        setColumn={setColumn}
       />
 
       <OsTable
         search={search}
         filter={filter}
+        column={column}
       />
     </div>
   );
