@@ -4,7 +4,7 @@ import User from "@/components/users/Users"
 export default function Users() {
     return(
         <div> 
-            <PageBreadcrumb pageTitle="Usuários"  />
+            <PageBreadcrumb pageTitle="Consultar usuários"  />
             <User/>
         </div>
     )

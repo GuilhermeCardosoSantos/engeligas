@@ -52,10 +52,6 @@ export default function UsersSearch({
             />
           </div>
 
-          <Button className="h-11 bg-engeligas-400 hover:bg-engeligas-500" onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            Criar Usuário
-          </Button>
         </div>
       </div>
     </div>

@@ -47,6 +47,10 @@ const navItems: NavItem[] = [
     icon: <DocsIcon />,
     name: "Ordem de serviço",
     path: "/os",
+    subItems: [
+      { name: "Cadastrar", path: "/os/create", pro: false },
+      { name: "Consultar", path: "/os", pro: false }
+    ]
   },
   // {
   //   icon: <UserCircleIcon />,
@@ -78,7 +82,11 @@ const adminItems: NavItem[] = [
   {
     icon: <UserIcon />,
     name: "Usuários",
-    path: "/users"
+    path: "/users",
+    subItems: [
+      { name: "Cadastrar", path: "/users/create", pro: false },
+      { name: "Consultar", path: "/users", pro: false }
+    ],
   },
   // {
   //   icon: <UserCircleIcon />,
@@ -143,7 +151,7 @@ const AppSidebar: React.FC = () => {
 
   const renderMenuItems = (
     navItems: NavItem[],
-    menuType: "main" | "others"
+    menuType: "main" | "others" | "admin"
   ) => (
     <ul className="flex flex-col gap-4">
       {navItems.map((nav, index) => (
@@ -318,7 +326,7 @@ const AppSidebar: React.FC = () => {
     }
   }, [openSubmenu]);
 
-  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
+  const handleSubmenuToggle = (index: number, menuType: "main" | "others" | "admin") => {
     setOpenSubmenu((prevOpenSubmenu) => {
       if (
         prevOpenSubmenu &&
@@ -396,7 +404,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-              {renderMenuItems(adminItems, "main")}
+              {renderMenuItems(adminItems, "admin")}
             </div>
             {/* menu */}
             <div>

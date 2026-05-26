@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronRight,
   Eye,
+  MoveRight,
   Pencil,
 } from "lucide-react";
 
@@ -32,6 +33,7 @@ import {
 import UsersMobileCard from "./UsersMobileCard";
 
 import { User } from "./Users";
+import Link from "next/link";
 
 type Props = {
   users: User[];
@@ -155,9 +157,9 @@ export default function UsersTable({
     <>
       {/* DESKTOP */}
 
-      <div className="hidden overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] xl:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3 xl:block">
         <Table>
-          <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+          <TableHeader className="border-b border-gray-100 dark:border-white/5">
             {table
               .getHeaderGroups()
               .map((headerGroup) => (
@@ -166,7 +168,7 @@ export default function UsersTable({
                     (header) => (
                       <TableCell
                         key={header.id}
-                        isHeader
+                        headers
                         className="px-5 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400"
                       >
                         {flexRender(
@@ -181,14 +183,14 @@ export default function UsersTable({
               ))}
           </TableHeader>
 
-          <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+          <TableBody className="divide-y divide-gray-100 dark:divide-white/5">
             {table.getRowModel().rows.map((row) => (
               <React.Fragment key={row.id}>
                 <TableRow
                   onClick={() =>
                     row.toggleExpanded()
                   }
-                  className="cursor-pointer transition hover:bg-gray-50 dark:hover:bg-white/[0.02]"
+                  className="cursor-pointer transition hover:bg-gray-50 dark:hover:bg-white/2"
                 >
                   {row
                     .getVisibleCells()
@@ -212,7 +214,7 @@ export default function UsersTable({
                       colSpan={
                         columns.length
                       }
-                      className="bg-gray-50 px-5 py-5 dark:bg-white/[0.02]"
+                      className="bg-gray-50 px-5 py-5 dark:bg-white/2"
                     >
                       <div className="grid grid-cols-4 gap-5">
                         <div>
@@ -255,18 +257,20 @@ export default function UsersTable({
                         </div>
 
                         <div className="flex items-end gap-2">
-                          <Button size="sm">
+                          {/* <Button size="sm">
                             <Eye className="mr-2 h-4 w-4" />
                             Perfil
-                          </Button>
+                          </Button> */}
 
-                          <Button
-                            size="sm"
-                            variant="outline"
+                        <div className="flex items-end gap-2">
+                          <Link
+                            href={`/users/${row.original.id}`}
+                            className="inline-flex items-center gap-2 text-sm font-medium text-engeligas-500 transition hover:text-engeligas-700 dark:text-engeligas-400  dark:hover:text-engeligas-500"
                           >
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Editar
-                          </Button>
+                            Acessar
+                            <MoveRight className="h-4 w-4" />
+                          </Link>
+                        </div>
                         </div>
                       </div>
                     </TableCell>
@@ -277,7 +281,7 @@ export default function UsersTable({
           </TableBody>
         </Table>
 
-        <div className="flex items-center justify-between border-t border-gray-100 px-5 py-4 dark:border-white/[0.05]">
+        <div className="flex items-center justify-between border-t border-gray-100 px-5 py-4 dark:border-white/5">
           <p className="text-sm text-gray-500">
             Total de usuários:{" "}
             {users.length}
