@@ -22,15 +22,26 @@ export default function AuthLayout({
               <GridShape />
               <div className="flex flex-col items-center max-w-xs">
                 <Link href="/" className="block mb-4">
+                  {/* Logo Light */}
                   <Image
+                    className="dark:hidden"
                     width={231}
                     height={48}
-                    src="/images/logo/logo1.png"
+                    src="/images/logo/logo-light.svg"
+                    alt="Logo"
+                  />
+
+                  {/* Logo Dark */}
+                  <Image
+                    className="hidden dark:block"
+                    width={250}
+                    height={48}
+                    src="/images/logo/logo-dark.svg"
                     alt="Logo"
                   />
                 </Link>
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  Plataforma interna ENGELIGAS para gestão,
+                  Plataforma interna para gestão,
                   controle e acompanhamento operacional.
                 </p>
               </div>
