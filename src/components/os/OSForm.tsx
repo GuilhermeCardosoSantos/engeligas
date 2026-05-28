@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-
+import { Trash2 } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 
 const inputClass =
@@ -13,29 +13,52 @@ const selectClass =
 const tableInputClass =
   "h-10 w-full min-w-[90px] rounded-lg border border-gray-300 bg-transparent px-3 text-sm outline-none transition focus:border-engeligas-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
+type ItemRow = {
+  id: number;
+};
+
 export default function OsForm() {
+  const [items, setItems] = React.useState<ItemRow[]>([{ id: Date.now() }]);
+
+  const handleAddItem = () => {
+    setItems((prev) => [...prev, { id: Date.now() + Math.random() }]);
+  };
+
+  const handleRemoveItem = (id: number) => {
+    setItems((prev) => {
+      if (prev.length === 1) return prev;
+      return prev.filter((item) => item.id !== id);
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* CABEÇALHO */}
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_420px]">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
-              Engeligas - Tecnologia em Metais e Ligas Especiais
-            </h1>
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
 
-            <p className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-300">
-              Rua Coelho Neto, nº 245 - Vila Prudente, São Paulo - SP
-            </p>
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+
+          {/* LEFT */}
+
+          <div>
+
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+              Ordem de Serviço
+            </h2>
 
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Tel: (11) 2272-2220 / 2061-7562
+              Gerencie ordens de serviço
             </p>
+
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
+          {/* RIGHT */}
+
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+
+            <div className="w-full lg:w-[220px]">
+
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-400">
                 Data do Pedido
               </label>
@@ -44,9 +67,11 @@ export default function OsForm() {
                 type="date"
                 className={inputClass}
               />
+
             </div>
 
-            <div>
+            <div className="w-full lg:w-[220px]">
+
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-400">
                 Nº Ordem de Serviço
               </label>
@@ -56,9 +81,13 @@ export default function OsForm() {
                 placeholder="OS"
                 className={inputClass}
               />
+
             </div>
+
           </div>
+
         </div>
+
       </div>
 
       {/* DADOS PRINCIPAIS */}
@@ -87,11 +116,7 @@ export default function OsForm() {
               Contato
             </label>
 
-            <input
-              type="text"
-              placeholder="Contato"
-              className={inputClass}
-            />
+            <input type="text" placeholder="Contato" className={inputClass} />
           </div>
 
           <div>
@@ -111,11 +136,7 @@ export default function OsForm() {
               Cliente
             </label>
 
-            <input
-              type="text"
-              placeholder="Cliente"
-              className={inputClass}
-            />
+            <input type="text" placeholder="Cliente" className={inputClass} />
           </div>
 
           <div>
@@ -176,83 +197,66 @@ export default function OsForm() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-              Descrição do Produto
-            </h2>
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            Descrição do Produto
+          </h2>
 
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Informe quantidades, liga, formato, medidas, peso e valores
-            </p>
-          </div>
-
-          <Button>
-            Adicionar Item
-          </Button>
+          <Button onClick={handleAddItem}>Adicionar Produto</Button>
         </div>
 
         <div className="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-800">
-          <table className=" w-full">
+          <table className="w-full">
             <thead className="border-b border-gray-100 dark:border-white/5">
               <tr>
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   QTD PÇ
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Liga
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Formato
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Ø Ext.
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Ø Int.
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Esp.
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Larg.
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Comp.
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Sobre Metal
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Unidade
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Peso
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Valor Unit.
                 </th>
-
                 <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                   Valor Produto
+                </th>
+                <th className="px-3 py-4 text-center text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Ação
                 </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-              {Array.from({ length: 10 }).map((_, index) => (
+              {items.map((item) => (
                 <tr
-                  key={index}
+                  key={item.id}
                   className="transition hover:bg-gray-50 dark:hover:bg-white/2"
                 >
                   <td className="p-2">
@@ -338,6 +342,17 @@ export default function OsForm() {
                   <td className="p-2">
                     <input type="text" placeholder="R$ -" className={tableInputClass} />
                   </td>
+
+                  <td className="p-2 text-center">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveItem(item.id)}
+                      disabled={items.length === 1}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-red-500 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40 dark:hover:bg-red-500/10"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -356,7 +371,7 @@ export default function OsForm() {
           <textarea
             rows={6}
             placeholder="* Os pesos apresentados são teóricos, podendo haver variações."
-            className="w-full rounded-2xl border border-gray-300 bg-transparent px-4 py-3 text-sm outline-none transition focus:border-engeligas-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+            className="w-full h-60 rounded-2xl border border-gray-300 bg-transparent px-4 py-3 text-sm outline-none transition focus:border-engeligas-500 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
           />
         </div>
 
@@ -396,9 +411,7 @@ export default function OsForm() {
       {/* FOOTER */}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-        <Button className="h-11">
-          Salvar OS
-        </Button>
+        <Button className="h-11">Salvar OS</Button>
       </div>
     </div>
   );

@@ -5,18 +5,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
-  BoxCubeIcon,
-  DocsIcon,
-  ChevronDownIcon,
-  GridIcon,
-  HorizontaLDots,
-  TaskIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  UserIcon,
-  UserCircleIcon,
-} from "../icons/index";
+  LayoutDashboard,
+  ClipboardList,
+  Ticket,
+  UsersRound,
+  ChevronDown,
+  MoreHorizontal,
+} from "lucide-react";
 import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
@@ -27,24 +22,20 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  // {
-  //   icon: <GridIcon />,
-  //   name: "Dashboard",
-  //   subItems: [
-  //     { name: "Início", path: "/home",  pro:true},
-  //   ],
-  // },
-  // {
-  //   icon: <UserIcon />,
-  //   name: "Usuários",
-  //   subItems: [
-  //     { name: "Contas", path: "/users",  pro:true},
-  //     { name: "Grupos", path: "/groups", pro:true },
-  //     { name: "Cargo", path: "/", pro:true },
-  //   ],
-  // },
   {
-    icon: <DocsIcon />,
+    icon: <LayoutDashboard size={20} />,
+    name: "Dashboard",
+    subItems: [
+      { name: "Início", path: "/home",  pro:false},
+    ],
+  },
+  {
+    icon: <Ticket size={20} />,
+    name: "Pedidos",
+    path: "/orders",
+  },
+  {
+    icon: <ClipboardList size={20} />,
     name: "Ordem de serviço",
     path: "/os",
     subItems: [
@@ -80,7 +71,7 @@ const navItems: NavItem[] = [
 
 const adminItems: NavItem[] = [
   {
-    icon: <UserIcon />,
+    icon: <UsersRound size={20} />,
     name: "Usuários",
     path: "/users",
     subItems: [
@@ -114,36 +105,36 @@ const adminItems: NavItem[] = [
   // },
 ];
 
-const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
-];
+// const othersItems: NavItem[] = [
+//   {
+//     icon: <PieChartIcon />,
+//     name: "Charts",
+//     subItems: [
+//       { name: "Line Chart", path: "/line-chart", pro: false },
+//       { name: "Bar Chart", path: "/bar-chart", pro: false },
+//     ],
+//   },
+//   {
+//     icon: <BoxCubeIcon />,
+//     name: "UI Elements",
+//     subItems: [
+//       { name: "Alerts", path: "/alerts", pro: false },
+//       { name: "Avatar", path: "/avatars", pro: false },
+//       { name: "Badge", path: "/badge", pro: false },
+//       { name: "Buttons", path: "/buttons", pro: false },
+//       { name: "Images", path: "/images", pro: false },
+//       { name: "Videos", path: "/videos", pro: false },
+//     ],
+//   },
+//   {
+//     icon: <PlugInIcon />,
+//     name: "Authentication",
+//     subItems: [
+//       { name: "Sign In", path: "/signin", pro: false },
+//       { name: "Sign Up", path: "/signup", pro: false },
+//     ],
+//   },
+// ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -182,7 +173,7 @@ const AppSidebar: React.FC = () => {
                 <span className={`menu-item-text`}>{nav.name}</span>
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
-                <ChevronDownIcon
+                <ChevronDown
                   className={`ml-auto w-5 h-5 transition-transform duration-200  ${
                     openSubmenu?.type === menuType &&
                     openSubmenu?.index === index
@@ -401,7 +392,7 @@ const AppSidebar: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Admin"
                 ) : (
-                  <HorizontaLDots />
+                  <MoreHorizontal size={18} />
                 )}
               </h2>
               {renderMenuItems(adminItems, "admin")}
@@ -418,7 +409,7 @@ const AppSidebar: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Menu"
                 ) : (
-                  <HorizontaLDots />
+                  <MoreHorizontal size={18}  />
                 )}
               </h2>
               {renderMenuItems(navItems, "main")}

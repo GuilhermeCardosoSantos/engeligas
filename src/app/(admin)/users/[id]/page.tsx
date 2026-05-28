@@ -54,10 +54,10 @@ export default function UserProfile() {
     <div className="space-y-6">
       {/* HERO */}
 
-      <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
         {/* TOP BG */}
 
-        <div className="h-36 bg-gradient-to-r from-engeligas-500 via-engeligas-400 to-orange-400" />
+        <div className="h-36 bg-linear-to-r from-engeligas-500 via-engeligas-400 to-orange-400" />
 
         {/* CONTENT */}
 
