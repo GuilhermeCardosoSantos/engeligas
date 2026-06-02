@@ -14,11 +14,13 @@ import { useState } from "react";
 import { useLoguin } from "@/hooks/auth/useLoguin";
 // toastify
 import { toast } from "react-toastify";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 export default function SignInForm() {
   // hooks
   const router = useRouter();
   const login = useLoguin();
+  const signIn = useAuthStore((state) => state.signIn);
   // util
   const [auth, setAuth] = useState<{ email: string; password: string; }>({
     email: "",
@@ -34,6 +36,7 @@ export default function SignInForm() {
         password: auth.password,
         remember: isChecked
       });
+      signIn(res.user)
       router.push('/home')
     } catch (error) {
       if (error instanceof Error) {
@@ -121,7 +124,7 @@ export default function SignInForm() {
                     </span>
                   </div>
                   <Link
-                    href="/reset-password"
+                    href="/forgot"
                     className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                   >
                     Esqueceu a senha?
