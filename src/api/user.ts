@@ -27,6 +27,44 @@ class UserApi {
 
     //#endregion
 
+    //#region PUT
+
+    UpdateUser = async (data: {
+        id: string;
+        name?: string;
+        email?: string;
+        cpf?: string;
+        phone?: string;
+        role?: string;
+        status?: string;
+    }) => {
+        try {
+            const response = await axios.put(
+                this.basePath,
+                data,
+                {
+                    withCredentials: true,
+                    validateStatus: (status) =>
+                        [
+                            200,
+                            404,
+                            422,
+                            500,
+                        ].includes(status),
+                }
+            );
+
+            return response;
+        } catch (error) {
+            console.error(
+                "Erro ao atualizar usuário:",
+                error
+            );
+        }
+    };
+
+    //#endregion
+
 }
 
 export default new UserApi();

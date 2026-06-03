@@ -40,6 +40,12 @@ export default function ToastProvider() {
 
   return (
     <ToastContainer
+      toastStyle={{
+        zIndex: 2147483647,
+      }}
+      style={{
+        zIndex: 2147483647,
+      }}
       key={theme}
       theme={theme}
       position="top-right"

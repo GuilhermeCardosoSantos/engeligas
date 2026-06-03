@@ -1,69 +1,194 @@
 "use client";
-import React from "react";
-import { useModal } from "../../hooks/useModal";
+// ui
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import { formatCpf, formatPhone } from "@/components/ui/mask/Index";
+// hooks
+import { useEffect, useState } from "react";
+import { useModal } from "../../hooks/useModal";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useUpdateUser } from "@/hooks/user/useUpdateUser";
+// toast
+import { toast } from "react-toastify";
 
 export default function UserInfoCard() {
+  // hooks
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
+  const { user, signIn } = useAuthStore();
+  const updateUser = useUpdateUser();
+  // util
+  const [form, setForm] = useState({
+    name: user?.name ?? "",
+    email: user?.email ?? "",
+    cpf: user?.cpf ?? "",
+    phone: user?.phone ?? "",
+  });
+  const hasChanges =
+    form.name !== user?.name ||
+    form.email !== user.email ||
+    form.cpf !== user.cpf ||
+    form.phone !== user.phone;
+
+  const getChangedFields = () => {
+    const payload: {
+      id: string;
+      name?: string;
+      email?: string;
+      cpf?: string;
+      phone?: string;
+    } = {
+      id: user!.user_id,
+    };
+
+    if (form.name !== user?.name) {
+      payload.name = form.name;
+    }
+
+    if (form.email !== user?.email) {
+      payload.email = form.email;
+    }
+
+    if (form.cpf !== user?.cpf) {
+      payload.cpf = form.cpf;
+    }
+
+    if (form.phone !== user?.phone) {
+      payload.phone = form.phone;
+    }
+
+    return payload;
   };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCpfChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value.replace(/\D/g, "");
+
+    setForm((prev) => ({
+      ...prev,
+      cpf: value,
+    }));
+  };
+
+  const handlePhoneChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value.replace(/\D/g, "");
+
+    setForm((prev) => ({
+      ...prev,
+      phone: value,
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const payload = getChangedFields();
+
+      if (Object.keys(payload).length === 1) {
+        toast.error(
+          "Nenhuma alteração foi realizada."
+        );
+        return;
+      }
+
+      const response = await updateUser.mutateAsync(payload);
+
+      signIn({
+        ...user!,
+        ...payload,
+      });
+
+      toast.success(
+        response.message ??
+        "Usuário atualizado com sucesso."
+      );
+
+      closeModal();
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Erro ao atualizar usuário."
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (!user) return;
+
+    setForm({
+      name: user.name ?? "",
+      email: user.email ?? "",
+      cpf: user.cpf ?? "",
+      phone: user.phone ?? "",
+    });
+  }, [user]);
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-            Personal Information
+            Informações Pessoais
           </h4>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                First Name
+                Nome
               </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Musharof
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Last Name
-              </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Chowdhury
+              <p className="text-sm capitalize font-medium text-gray-800 dark:text-white/90">
+                {user?.name}
               </p>
             </div>
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Email address
+                CPF
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                randomuser@pimjo.com
+                {formatCpf(user?.cpf)}
               </p>
             </div>
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Phone
+                Email
               </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +09 363 398 46
+              <p className="text-sm lowercase font-medium text-gray-800 dark:text-white/90">
+                {user?.email}
               </p>
             </div>
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Bio
+                Telefone
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Team Manager
+                {formatPhone(user?.phone)}
+              </p>
+            </div>
+
+            <div>
+              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                Permissão
+              </p>
+              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                {user?.role == "USER" ? "Usuário comum" : "Administrador"}
               </p>
             </div>
           </div>
@@ -88,7 +213,7 @@ export default function UserInfoCard() {
               fill=""
             />
           </svg>
-          Edit
+          Editar
         </button>
       </div>
 
@@ -96,89 +221,53 @@ export default function UserInfoCard() {
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-              Edit Personal Information
+              Editar Informações Pessoais
             </h4>
             <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-              Update your details to keep your profile up-to-date.
+              Atualize seus dados para manter seu perfil atualizado.
             </p>
           </div>
           <form className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-              <div>
-                <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                  Social Links
-                </h5>
-
-                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                  <div>
-                    <Label>Facebook</Label>
-                    <Input
-                      type="text"
-                      defaultValue="https://www.facebook.com/PimjoHQ"
-                    />
-                  </div>
-
-                  <div>
-                    <Label>X.com</Label>
-                    <Input type="text" defaultValue="https://x.com/PimjoHQ" />
-                  </div>
-
-                  <div>
-                    <Label>Linkedin</Label>
-                    <Input
-                      type="text"
-                      defaultValue="https://www.linkedin.com/company/pimjo"
-                    />
-                  </div>
-
-                  <div>
-                    <Label>Instagram</Label>
-                    <Input
-                      type="text"
-                      defaultValue="https://instagram.com/PimjoHQ"
-                    />
-                  </div>
-                </div>
-              </div>
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                  Personal Information
+                  Informações Pessoais
                 </h5>
 
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>First Name</Label>
-                    <Input type="text" defaultValue="Musharof" />
+                    <Label>Nome</Label>
+                    <Input className="capitalize" name="name" type="text" placeholder={user?.name} required value={form.name} onChange={handleChange} />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Last Name</Label>
-                    <Input type="text" defaultValue="Chowdhury" />
+                    <Label>CPF</Label>
+                    <Input type="text" name="cpf" required placeholder={formatCpf(user?.cpf)} value={formatCpf(form.cpf)} onChange={handleCpfChange} />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Email Address</Label>
-                    <Input type="text" defaultValue="randomuser@pimjo.com" />
+                    <Label>Email</Label>
+                    <Input type="text" name="email" required placeholder={user?.email} value={form.email} onChange={handleChange} />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Phone</Label>
-                    <Input type="text" defaultValue="+09 363 398 46" />
+                    <Label>Telefone</Label>
+                    <Input type="text" name="phone" placeholder={formatPhone(user?.phone)} value={formatPhone(form.phone)} onChange={handlePhoneChange} />
                   </div>
 
                   <div className="col-span-2">
-                    <Label>Bio</Label>
-                    <Input type="text" defaultValue="Team Manager" />
+                    <Label>Permissão</Label>
+                    <Input type="text" disabled onChange={handleChange} value={user?.role == "USER" ? "Usuário comum" : "Administrador"} />
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
               <Button size="sm" variant="outline" onClick={closeModal}>
-                Close
+                Fechar
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save Changes
+              <Button size="sm" disabled={!hasChanges} type="button" onClick={handleSave}>
+                Salvar Mudanças
               </Button>
             </div>
           </form>
