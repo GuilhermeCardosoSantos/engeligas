@@ -2,78 +2,84 @@
 
 import * as React from "react";
 
-import { faker } from "@faker-js/faker";
-
 import UsersSearch from "./UsersSearch";
 import UsersTable from "./UsersTable";
 
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  status: "Ativo" | "Inativo";
-  phone: string;
-  createdAt: string;
-  lastAccess: string;
-};
-
-faker.seed(123);
-
-const users: User[] = Array.from({
-  length: 50,
-}).map((_, index) => ({
-  id: index + 1,
-
-  name: faker.person.fullName(),
-
-  email: `user${index + 1}@gmail.com`,
-
-  role: faker.helpers.arrayElement([
-    "Administrador",
-    "Supervisor",
-    "Financeiro",
-    "RH",
-    "Colaborador",
-  ]),
-
-  status: faker.helpers.arrayElement([
-    "Ativo",
-    "Inativo",
-  ]),
-
-  phone: faker.phone.number(),
-
-  createdAt: faker.date
-    .past()
-    .toLocaleDateString(),
-
-  lastAccess: faker.date
-    .recent()
-    .toLocaleString(),
-}));
+import { useGetAllUsers } from "@/hooks/user/useGetAllUser";
 
 export default function Users() {
   const [search, setSearch] =
     React.useState("");
 
+  const {
+    data: users = [],
+    isLoading,
+    error,
+  } = useGetAllUsers();
+
+  console.log(users)
+
+  const normalizedUsers = React.useMemo(() => {
+    return users.map((user) => ({
+      ...user,
+  
+      status:
+        user.status === "ACTIVE"
+          ? "Ativo"
+          : "Inativo",
+  
+      role:
+        user.role === "ADMIN"
+          ? "Administrador"
+          : "Usuário",
+  
+      createdAt: user.created_at
+        ? new Date(
+            user.created_at
+          ).toLocaleDateString("pt-BR")
+        : "-",
+  
+      lastAccess: user.last_access
+        ? new Date(
+            user.last_access
+          ).toLocaleString("pt-BR")
+        : "Nunca acessou",
+    }));
+  }, [users]);
+  
   const filteredUsers = React.useMemo(() => {
-    return users.filter((user) => {
+    return normalizedUsers.filter((user) => {
       return (
         user.name
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(search.toLowerCase()) ||
-
+  
         user.email
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(search.toLowerCase()) ||
-
+  
         user.role
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(search.toLowerCase())
       );
     });
-  }, [search]);
+  }, [normalizedUsers, search]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-10">
+        Carregando usuários...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-10 text-red-500">
+        Erro ao carregar usuários.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

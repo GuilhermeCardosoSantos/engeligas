@@ -1,17 +1,16 @@
 "use client";
 
 import * as React from "react";
-
+// icons
 import {
   ChevronDown,
   ChevronRight,
   Eye,
-  MoveRight,
   Pencil,
   UserRoundX,
-  UserX,
-} from "lucide-react";
 
+} from "lucide-react";
+// table
 import {
   ColumnDef,
   ExpandedState,
@@ -21,9 +20,9 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
+// button
 import Button from "../ui/button/Button";
-
+// ui
 import {
   Table,
   TableBody,
@@ -31,16 +30,22 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-
+// card
 import UsersMobileCard from "./UsersMobileCard";
-
+// user
 import { User } from "./Users";
-
+// next
 import Link from "next/link";
-
+import { formatPhone } from "@/components/ui/mask/Index"
+// type
 type Props = {
   users: User[];
 };
+// 
+import { toast } from "react-toastify";
+// hooks
+import { useUpdateUser } from "@/hooks/user/useUpdateUser";
+import { useQueryClient } from "@tanstack/react-query";
 
 function getInitials(name: string) {
 
@@ -56,6 +61,9 @@ function getInitials(name: string) {
 export default function UsersTable({
   users,
 }: Props) {
+  // hooks
+  const updateUser = useUpdateUser();
+  const queryClient = useQueryClient();
 
   // =========================
   // EXPANDED
@@ -214,11 +222,10 @@ export default function UsersTable({
         return (
 
           <div
-            className={`w-fit rounded-full px-2 py-1 text-xs font-medium ${
-              status === "Ativo"
-                ? "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400"
-                : "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400"
-            }`}
+            className={`w-fit rounded-full px-2 py-1 text-xs font-medium ${status === "Ativo"
+              ? "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400"
+              : "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400"
+              }`}
           >
 
             {status}
@@ -273,6 +280,35 @@ export default function UsersTable({
     getPaginationRowModel:
       getPaginationRowModel(),
   });
+
+  const handleInactiveUser = async (
+    user: User
+  ) => {
+    try {
+      const response =
+        await updateUser.mutateAsync({
+          id: user.id,
+          status: "INACTIVE",
+        });
+
+      toast.success(
+        response.message ??
+        "Usuário inativado com sucesso."
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+
+      setContextMenu(null);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Erro ao inativar usuário."
+      );
+    }
+  };
 
   return (
     <>
@@ -409,8 +445,8 @@ export default function UsersTable({
 
                             <p className="mt-1 font-medium text-gray-800 dark:text-white/90">
                               {
-                                row.original
-                                  .phone
+                                formatPhone(row.original
+                                  .phone)
                               }
                             </p>
 
@@ -446,7 +482,7 @@ export default function UsersTable({
 
                           </div>
 
-                          
+
 
                         </div>
 
@@ -628,16 +664,11 @@ export default function UsersTable({
             <div className="my-2 border-t border-gray-200 dark:border-white/10" />
 
             <button
-              onClick={() => {
-
-                console.log(
-                  "Inativar:",
-                  contextMenu.user.id
-                );
-
-                setContextMenu(null);
-
-              }}
+              onClick={() =>
+                handleInactiveUser(
+                  contextMenu.user
+                )
+              }
 
               className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50 dark:hover:bg-red-500/10"
             >

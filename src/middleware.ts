@@ -42,7 +42,6 @@ export async function middleware(
 
   if (sessionId) {
     try {
-      console.log("SESSION:", sessionId);
       const response =
         await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}auth/validate`,
@@ -55,15 +54,6 @@ export async function middleware(
           }
         );
 
-      console.log(
-        "STATUS:",
-        response.status
-      );
-
-      console.log(
-        "DATA:",
-        response.data
-      );
 
       if (response.status !== 200) {
         const redirect =
