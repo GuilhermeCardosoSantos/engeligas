@@ -320,6 +320,84 @@ UpdateProduct = async (
 //#endregion
 
 
+// #region DELETE
+
+DeleteOrder = async (
+    id: number
+  ) => {
+    try {
+  
+      const response =
+        await axios.delete(
+          `${this.basePath}${id}`,
+          {
+            withCredentials: true,
+  
+            validateStatus: (
+              status
+            ) => {
+  
+              return (
+                status === 200 ||
+                status === 404 ||
+                status === 500
+              );
+  
+            },
+          }
+        );
+  
+      return response;
+  
+    } catch (error) {
+  
+      console.error(
+        "Erro ao excluir pedido:",
+        error
+      );
+  
+    }
+};
+
+DeleteOrderProduct = async (
+    id: number
+  ) => {
+    try {
+  
+      const response =
+        await axios.delete(
+          `${this.basePath}product/${id}`,
+          {
+            withCredentials: true,
+  
+            validateStatus: (
+              status
+            ) => {
+  
+              return (
+                status === 200 ||
+                status === 404 ||
+                status === 500
+              );
+  
+            },
+          }
+        );
+  
+      return response;
+  
+    } catch (error) {
+  
+      console.error(
+        "Erro ao excluir produto:",
+        error
+      );
+  
+    }
+};
+
+// #endregion
+
 }
 
 export default new OrderApi();

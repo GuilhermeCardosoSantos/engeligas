@@ -16,7 +16,7 @@ export function useGetOrderById(
 
       switch (response?.status) {
         case 200:
-          return response.data;
+          return response.data.data[0].find_order_by_id;
 
         case 404:
           throw new Error(

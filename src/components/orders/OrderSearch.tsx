@@ -10,6 +10,14 @@ import {
 
 import Button from "@/components/ui/button/Button";
 
+type SyncStatus = {
+  running: boolean;
+  progress: number;
+  current: number;
+  total: number;
+  stage: string;
+};
+
 type Props = {
   search: string;
 
@@ -22,6 +30,18 @@ type Props = {
   setColumn: React.Dispatch<
     React.SetStateAction<string>
   >;
+
+  syncStatus?: SyncStatus;
+
+  onSync?: () => void;
+
+  onUpload?: (
+    file: File
+  ) => Promise<void>;
+
+  isSyncing?: boolean;
+
+  isUploading?: boolean;
 };
 
 export default function OrdersSearch({
@@ -29,13 +49,51 @@ export default function OrdersSearch({
   setSearch,
   column,
   setColumn,
+  syncStatus,
+  onSync,
+  onUpload,
+  isSyncing = false,
+  isUploading = false,
 }: Props) {
+
+  const fileInputRef =
+    React.useRef<HTMLInputElement>(null);
+
+  const showProgress =
+    syncStatus?.running ||
+    isSyncing;
+
+  const progress =
+    syncStatus?.progress ?? 0;
+
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
 
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".xlsx,.xls"
+        className="hidden"
+        onChange={async (e) => {
 
-        {/* LEFT */}
+          const file =
+            e.target.files?.[0];
+
+          if (
+            !file ||
+            !onUpload
+          ) {
+            return;
+          }
+
+          await onUpload(file);
+
+          e.target.value = "";
+
+        }}
+      />
+
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
 
         <div>
 
@@ -49,11 +107,7 @@ export default function OrdersSearch({
 
         </div>
 
-        {/* RIGHT */}
-
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-
-          {/* COLUMN */}
 
           <select
             value={column}
@@ -67,15 +121,15 @@ export default function OrdersSearch({
               Todas colunas
             </option>
 
-            <option value="id">
+            <option value="pedido_id">
               Pedido
             </option>
 
-            <option value="company">
-              Empresa
+            <option value="cliente">
+              Cliente
             </option>
 
-            <option value="seller">
+            <option value="vendedor">
               Vendedor
             </option>
 
@@ -83,21 +137,11 @@ export default function OrdersSearch({
               Status
             </option>
 
-            <option value="priority">
-              Prioridade
-            </option>
-
-            <option value="po">
-              PO
-            </option>
-
-            <option value="nfe">
-              NF-E
+            <option value="frete">
+              Frete
             </option>
 
           </select>
-
-          {/* SEARCH */}
 
           <div className="relative">
 
@@ -115,29 +159,117 @@ export default function OrdersSearch({
 
           </div>
 
-          {/* BUTTONS */}
-
           <div className="flex items-center gap-3">
 
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              disabled={isUploading}
+              onClick={() =>
+                fileInputRef.current?.click()
+              }
+            >
 
               <Upload className="h-4 w-4" />
 
-              Upload
+              {
+                isUploading
+                  ? "Importando..."
+                  : "Upload"
+              }
 
             </Button>
 
-            <Button>
+            <Button
+              onClick={onSync}
+              disabled={
+                syncStatus?.running ||
+                isSyncing
+              }
+            >
 
-              <RefreshCcw className="h-4 w-4" />
+              <RefreshCcw
+                className={`h-4 w-4 ${showProgress
+                    ? "animate-spin"
+                    : ""
+                  }`}
+              />
 
-              Sincronizar
+              {
+                showProgress
+                  ? "Sincronizando"
+                  : "Sincronizar"
+              }
 
             </Button>
 
           </div>
 
         </div>
+
+      </div>
+
+      {showProgress && (
+
+        <div className="mt-5 border-t border-gray-200 pt-5 dark:border-gray-800">
+
+          <div className="mb-2 flex items-center justify-between text-sm">
+
+            <span className="font-medium text-gray-700 dark:text-gray-300">
+              {
+                syncStatus?.stage ??
+                "Iniciando sincronização"
+              }
+            </span>
+
+            <span className="text-gray-500 dark:text-gray-400">
+              {syncStatus?.current ?? 0}
+              {" / "}
+              {syncStatus?.total ?? 0}
+            </span>
+
+          </div>
+
+          <div className="h-3 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
+
+            <div
+              className="h-full rounded-full bg-engeligas-500 transition-all duration-500"
+              style={{
+                width: `${progress}%`,
+              }}
+            />
+
+          </div>
+
+          <div className="mt-2 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+
+            <span>
+              Aguarde, não feche esta tela.
+            </span>
+
+            <span>
+              {progress.toFixed(1)}%
+            </span>
+
+          </div>
+
+        </div>
+
+      )}
+
+      <div className="mt-3 text-right">
+
+        <a
+          href={`${process.env.NEXT_PUBLIC_API_URL}order/template`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+    text-xs
+    text-engeligas-500
+    hover:underline
+  "
+        >
+          Baixar modelo Excel
+        </a>
 
       </div>
 

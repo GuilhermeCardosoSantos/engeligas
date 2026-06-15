@@ -3,12 +3,10 @@
 import * as React from "react";
 
 import Link from "next/link";
-
+import { getStatusClassBadge } from "../ui/badge/Status";
 import {
   Eye,
-  FileCog2,
   FileOutput,
-  FileSpreadsheet,
   Pencil,
   Trash2,
 } from "lucide-react";
@@ -32,47 +30,32 @@ import {
 } from "../ui/table";
 
 type Order = {
-  id: string;
-  serie: string;
-  po: string;
-  status: string;
-  prioridade: string;
-  abertura: string;
-  empresa: string;
+  id: number;
+  pedido_id: number;
+  cliente: string;
+  emissao: string;
+  previsto: string;
   vendedor: string;
-  total: string;
-  os: boolean;
+  frete: string;
+  status: string;
+  total: number;
 };
 
 type Props = {
   orders: Order[];
   search: string;
   column: string;
+  onDelete: (
+    id: number
+  ) => void;
 };
 
-function getPriorityClass(
-  priority: string
-) {
-
-  switch (priority) {
-
-    case "URGENTE":
-      return "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400";
-
-    case "ALTA":
-      return "bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400";
-
-    default:
-      return "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400";
-
-  }
-
-}
 
 export default function OrdersTable({
   orders,
   search,
   column,
+  onDelete
 }: Props) {
 
   // =========================
@@ -164,7 +147,7 @@ export default function OrdersTable({
 
             const fieldValue = String(
               order[
-                column as keyof Order
+              column as keyof Order
               ] ?? ""
             ).toLowerCase();
 
@@ -191,140 +174,205 @@ export default function OrdersTable({
   // COLUMNS
   // =========================
 
-  const columns: ColumnDef<Order>[] =
-    [
+  const columns: ColumnDef<Order>[] = [
 
-      {
-        accessorKey: "id",
+    {
+      accessorKey: "pedido_id",
 
-        header: "Pedido",
+      header: "Pedido",
 
-        cell: ({ row }) => (
+      cell: ({ row }) => (
 
-          <span className="font-medium">
-            {row.original.id}
-          </span>
+        <span className="font-medium">
+          #{row.original.pedido_id}
+        </span>
 
-        ),
+      ),
+    },
+
+    {
+      accessorKey: "cliente",
+
+      header: "Cliente",
+
+      cell: ({ row }) => (
+
+        <span className="block max-w-[280px] truncate">
+
+          {row.original.cliente}
+
+        </span>
+
+      ),
+    },
+
+    {
+      accessorKey: "emissao",
+
+      header: "Emissão",
+
+      cell: ({ row }) => {
+
+        const date = new Date(
+          row.original.emissao
+        );
+
+        return date.toLocaleDateString(
+          "pt-BR"
+        );
+
       },
+    },
 
+    {
+      accessorKey: "previsto",
 
-      {
-        accessorKey: "po",
-        header: "PO",
+      header: "Previsto",
+
+      cell: ({ row }) => {
+
+        const date = new Date(
+          row.original.previsto
+        );
+
+        return date.toLocaleDateString(
+          "pt-BR"
+        );
+
       },
+    },
 
-      // =========================
-      // NOVA COLUNA OS
-      // =========================
+    {
+      accessorKey: "vendedor",
 
-      {
-        accessorKey: "os",
+      header: "Vendedor",
+    },
 
-        header: "OS",
-
-        cell: ({ row }) => (
-
-          row.original.os ? (
-
-            <div className="w-fit rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700 dark:bg-green-500/10 dark:text-green-400">
-
-              GERADA
-
-            </div>
-
-          ) : (
-
-            <div className="w-fit rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400">
-
-              PENDENTE
-
-            </div>
-
-          )
-
-        ),
-      },
-
-      {
-        accessorKey: "status",
-
-        header: "Status",
-
-        cell: ({ row }) => (
-
-          <div className="w-fit rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700 dark:bg-green-500/10 dark:text-green-400">
-
-            {row.original.status}
-
-          </div>
-
-        ),
-      },
-
-      {
-        accessorKey: "prioridade",
-
-        header: "Prioridade",
-
-        cell: ({ row }) => (
-
-          <div
-            className={`w-fit rounded-full px-2.5 py-1 text-xs font-medium ${getPriorityClass(
-              row.original.prioridade
-            )}`}
+    {
+      accessorKey: "frete",
+      header: "Frete",
+      cell: ({ row }) => {
+    
+        const frete =
+          row.original.frete
+            ?.toUpperCase();
+    
+        if (frete?.includes("CIF")) {
+          return (
+            <span
+              className="
+                inline-flex
+                rounded-full
+                px-2.5
+                py-1
+                text-xs
+                font-medium
+                bg-blue-100
+                text-blue-700
+                dark:bg-blue-500/10
+                dark:text-blue-400
+              "
+            >
+              CIF
+            </span>
+          );
+        }
+    
+        if (frete?.includes("FOB")) {
+          return (
+            <span
+              className="
+                inline-flex
+                rounded-full
+                px-2.5
+                py-1
+                text-xs
+                font-medium
+                bg-orange-100
+                text-orange-700
+                dark:bg-orange-500/10
+                dark:text-orange-400
+              "
+            >
+              FOB
+            </span>
+          );
+        }
+    
+        return (
+          <span
+            className="
+              inline-flex
+              rounded-full
+              px-2.5
+              py-1
+              text-xs
+              font-medium
+              bg-gray-100
+              text-gray-700
+              dark:bg-gray-500/10
+              dark:text-gray-400
+            "
           >
-
-            {row.original.prioridade}
-
-          </div>
-
-        ),
-      },
-
-      {
-        accessorKey: "abertura",
-        header: "Abertura",
-      },
-
-      {
-        accessorKey: "empresa",
-
-        header: "Empresa",
-
-        cell: ({ row }) => (
-
-          <span className="block max-w-[280px] truncate">
-
-            {row.original.empresa}
-
+            NÃO IDENTIFICADO
           </span>
-
-        ),
+        );
       },
+    },
 
-      {
-        accessorKey: "vendedor",
-        header: "Vendedor",
-      },
+    {
+      accessorKey: "status",
 
-      {
-        accessorKey: "total",
+      header: "Status",
 
-        header: "Total",
+      cell: ({ row }) => (
 
-        cell: ({ row }) => (
+        <div
+          className={`
+          w-fit
+          rounded-full
+          px-2.5
+          py-1
+          text-xs
+          font-medium
+          ${getStatusClassBadge(
+            row.original.status
+          )}
+        `}
+        >
 
-          <span className="font-semibold text-gray-800 dark:text-white/90">
+          {row.original.status}
 
-            {row.original.total}
+        </div>
 
-          </span>
+      ),
+    },
 
-        ),
-      },
+    {
+      accessorKey: "total",
 
-    ];
+      header: "Total",
+
+      cell: ({ row }) => (
+
+        <span className="font-semibold text-gray-800 dark:text-white/90">
+
+          {Number(
+            row.original.total
+          ).toLocaleString(
+            "pt-BR",
+            {
+              style: "currency",
+              currency: "BRL",
+            }
+          )}
+
+        </span>
+
+      ),
+    },
+
+  ];
 
   // =========================
   // TABLE
@@ -524,7 +572,7 @@ export default function OrdersTable({
 
             <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
 
-              {contextMenu.row.id}
+              #{contextMenu.row.pedido_id}
 
             </h3>
 
@@ -535,10 +583,7 @@ export default function OrdersTable({
           <div className="py-2">
 
             <Link
-              href={`/orders/${contextMenu.row.id.replace(
-                "#",
-                ""
-              )}`}
+              href={`/orders/${contextMenu.row.id}`}
 
               onClick={() =>
                 setContextMenu(null)
@@ -554,10 +599,7 @@ export default function OrdersTable({
             </Link>
 
             <Link
-              href={`/orders/edit/${contextMenu.row.id.replace(
-                "#",
-                ""
-              )}`}
+              href={`/orders/${contextMenu.row.id}/edit`}
 
               onClick={() =>
                 setContextMenu(null)
@@ -573,40 +615,17 @@ export default function OrdersTable({
             </Link>
 
             <Link
-              href={`/orders/edit/${contextMenu.row.id.replace(
-                "#",
-                ""
-              )}`}
-
+              href={`${process.env.NEXT_PUBLIC_API_URL}order/file/${contextMenu.row.pedido_id}/anexo_${contextMenu.row.pedido_id}.pdf`}
+              target="_blank"
               onClick={() =>
                 setContextMenu(null)
               }
-
               className="flex items-center gap-3 px-4 py-3 text-sm transition hover:bg-gray-100 dark:hover:bg-white/5"
             >
 
-              <FileOutput    className="h-4 w-4" />
+              <FileOutput className="h-4 w-4" />
 
               PDF
-
-            </Link>
-
-            <Link
-              href={`/orders/edit/${contextMenu.row.id.replace(
-                "#",
-                ""
-              )}`}
-
-              onClick={() =>
-                setContextMenu(null)
-              }
-
-              className="flex items-center gap-3 px-4 py-3 text-sm transition hover:bg-gray-100 dark:hover:bg-white/5"
-            >
-
-              <FileCog2  className="h-4 w-4" />
-
-              Gerar OS
 
             </Link>
 
@@ -615,16 +634,36 @@ export default function OrdersTable({
             <button
               onClick={() => {
 
-                console.log(
-                  "Excluir:",
+                const confirmed =
+                  window.confirm(
+                    `Deseja realmente excluir este pedido #${contextMenu.row.pedido_id}? `
+                  );
+
+                if (!confirmed) {
+                  return;
+                }
+
+                onDelete(
                   contextMenu.row.id
                 );
 
                 setContextMenu(null);
 
               }}
-
-              className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50 dark:hover:bg-red-500/10"
+              className="
+                flex
+                w-full
+                items-center
+                gap-3
+                px-4
+                py-3
+                text-left
+                text-sm
+                text-red-500
+                transition
+                hover:bg-red-50
+                dark:hover:bg-red-500/10
+              "
             >
 
               <Trash2 className="h-4 w-4" />
