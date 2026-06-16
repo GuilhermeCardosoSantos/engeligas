@@ -1,11 +1,13 @@
-"use client";
-
-import * as React from "react";
-
-import OSSearch from "@/components/os/OSSearch";
 import OSProfile from "@/components/os/profile/OSPage";
+import { Metadata } from "next";
 
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+export const metadata: Metadata = {
+    title: "ENGELIGAS & ENQUÍMICA | Ordem de serviço",
+    description:
+      "A ENGELIGAS & ENQUÍMICA atua desde 2012 oferecendo soluções em Bronze, Cobre, Latão e Alumínio, com excelência, qualidade, tecnologia e compromisso no segmento de metais não ferrosos.",
+  };
+  
+
 
 export default function OS() {
 

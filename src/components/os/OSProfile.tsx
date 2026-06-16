@@ -183,7 +183,7 @@ export default function OsProfile() {
                                 <Link href="/os/edit/20336">
 
                                     <Button>
-                                        Editar OS
+                                        Editar 
                                     </Button>
 
                                 </Link>
