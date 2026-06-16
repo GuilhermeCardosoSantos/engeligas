@@ -2,11 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 
 import OrderApi from "@/api/order";
 
-export function useGetProductById(
-  id: number
-) {
+export function useGetProductById(id: number) {
   return useQuery({
-    queryKey: ["product", id],
+    queryKey: ["order-product", id],
 
     enabled: !!id,
 
@@ -25,7 +23,7 @@ export function useGetProductById(
 
         default:
           throw new Error(
-            "Erro ao buscar produto."
+            "Erro ao buscar OS."
           );
       }
     },

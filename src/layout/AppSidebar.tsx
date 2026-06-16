@@ -38,10 +38,10 @@ const navItems: NavItem[] = [
     icon: <ClipboardList size={20} />,
     name: "Ordem de serviço",
     path: "/os",
-    subItems: [
-      { name: "Cadastrar", path: "/os/create", pro: false },
-      { name: "Consultar", path: "/os", pro: false }
-    ]
+    // subItems: [
+    //   { name: "Cadastrar", path: "/os/create", pro: false },
+    //   { name: "Consultar", path: "/os", pro: false }
+    // ]
   },
   // {
   //   icon: <UserCircleIcon />,

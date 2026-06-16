@@ -9,10 +9,9 @@ export function useGetAllProducts() {
     queryFn: async () => {
       const response =
         await OrderApi.FindAllProducts();
-
       switch (response?.status) {
         case 200:
-          return response.data;
+          return response.data.data;
 
         default:
           throw new Error(

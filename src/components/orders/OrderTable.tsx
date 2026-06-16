@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import Link from "next/link";
-import { getStatusClassBadge } from "../ui/badge/Status";
+import { getStatusClassBadge } from "../ui/badge/ClassBadge";
 import {
   Eye,
   FileOutput,

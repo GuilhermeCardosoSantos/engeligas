@@ -10,44 +10,24 @@ import {
 
 import Button from "@/components/ui/button/Button";
 
+import {
+  getLigaClassBadge,
+  getStatusClassBadge,
+} from "@/components/os/profile/helpers";
+
 type Props = {
-  order: any;
+  os: any;
   form: any;
-  onSave?: () => void;
-  isSaving?: boolean;
+  onSave: () => void;
+  isSaving: boolean;
 };
 
-const getStatusClassBadge = (status?: string) => {
-  const value = status?.toUpperCase() ?? "";
-
-  switch (value) {
-    case "FINALIZADO":
-      return "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400";
-
-    case "ALERTA":
-      return "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400";
-
-    case "EM ATRASO":
-      return "bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400";
-
-    case "CANCELADO":
-      return "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400";
-
-    case "EM ABERTO":
-    default:
-      return "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400";
-  }
-};
-
-export default function OrderEditHeader({
-  order,
+export default function OSEditHeader({
+  os,
   form,
   onSave,
   isSaving,
 }: Props) {
-  const status =
-    form?.status ?? order.status ?? "EM ABERTO";
-
   return (
     <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
       <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
@@ -59,7 +39,7 @@ export default function OrderEditHeader({
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
-                Editar Pedido #{order.pedido_id}
+                Editar OS #{os.id}
               </h1>
 
               <span
@@ -70,25 +50,50 @@ export default function OrderEditHeader({
                   py-1
                   text-xs
                   font-medium
-                  ${getStatusClassBadge(status)}
+                  ${getStatusClassBadge(
+                    form.status
+                  )}
                 `}
               >
-                {status}
+                {form.status}
+              </span>
+
+              <span
+                className={`
+                  inline-flex
+                  rounded-full
+                  px-3
+                  py-1
+                  text-xs
+                  font-medium
+                  ${getLigaClassBadge(
+                    form.liga
+                  )}
+                `}
+              >
+                {form.liga ||
+                  "NÃO ENCONTRADO"}
               </span>
             </div>
 
-            <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              {form?.cliente || order.cliente}
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              Produto vinculado ao pedido{" "}
+              <Link
+                href={`/orders/${os.order_id}`}
+                className="font-medium text-engeligas-500 hover:underline"
+              >
+                #{os.pedido_id}
+              </Link>
             </p>
 
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              Altere os dados comerciais, financeiros e status do pedido.
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">
+              Altere os dados técnicos, medidas, pesos, valores e status da OS.
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <Link href={`/orders/${order.id}`}>
+          <Link href={`/os/${os.id}`}>
             <Button variant="outline">
               <X className="h-4 w-4" />
               Cancelar
@@ -102,7 +107,7 @@ export default function OrderEditHeader({
             <Save className="h-4 w-4" />
             {isSaving
               ? "Salvando..."
-              : "Salvar Pedido"}
+              : "Salvar OS"}
           </Button>
         </div>
       </div>

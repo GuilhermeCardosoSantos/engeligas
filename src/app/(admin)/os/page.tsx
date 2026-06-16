@@ -1,40 +1,16 @@
-"use client";
+import OSPage from "@/components/OS/OSPage";
 
-import * as React from "react";
+import { Metadata } from "next";
 
-import OSSearch from "@/components/os/OSSearch";
-import OsTable from "@/components/os/OsTable";
+export const metadata: Metadata = {
+  title: "ENGELIGAS & ENQUÍMICA | Ordem de serviço",
+  description:
+    "A ENGELIGAS & ENQUÍMICA atua desde 2012 oferecendo soluções em Bronze, Cobre, Latão e Alumínio, com excelência, qualidade, tecnologia e compromisso no segmento de metais não ferrosos.",
+};
 
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 
-export default function OS() {
-  const [search, setSearch] =
-    React.useState("");
-
-  const [filter, setFilter] =
-    React.useState("");
-
-  const [column, setColumn] =
-    React.useState("all");
-
+export default function Orders() {
   return (
-    <div className="space-y-6">
-      <PageBreadcrumb pageTitle="Ordem de serviço" />
-
-      <OSSearch
-        search={search}
-        setSearch={setSearch}
-        filter={filter}
-        setFilter={setFilter}
-        column={column}
-        setColumn={setColumn}
-      />
-
-      <OsTable
-        search={search}
-        filter={filter}
-        column={column}
-      />
-    </div>
+      <OSPage />
   );
 }
