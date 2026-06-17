@@ -2,17 +2,19 @@
 
 import { useParams } from "next/navigation";
 
+import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+
+import { useGetOrderById } from "@/hooks/order/useGetOrderById";
+
 import OrderHeader from "@/components/orders/profile/OrderHeader";
 import OrderInfoCard from "@/components/orders/profile/OrderInfoCard";
 import OrderFinanceCard from "@/components/orders/profile/OrderFinanceCard";
 import OrderProductsCard from "@/components/orders/profile/OrderProductsCard";
 import OrderTimelineCard from "@/components/orders/profile/OrderTimelineCard";
+import OrderImagesCard from "@/components/orders/profile/OrderImagesCard";
+import OrderObservationCard from "./OrderObservationCard";
 
-import { useGetOrderById } from "@/hooks/order/useGetOrderById";
-
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-
-export default function OrderProfile() {
+export default function OrderProfilePage() {
   const params = useParams<{
     id: string;
   }>();
@@ -36,12 +38,10 @@ export default function OrderProfile() {
   if (error || !data?.order) {
     return (
       <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-600 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400">
-        Erro ao carregar pedido.
+        Pedido não encontrado.
       </div>
     );
   }
-
-  const products = data.products ?? [];
 
   return (
     <div className="space-y-6">
@@ -52,18 +52,25 @@ export default function OrderProfile() {
       />
 
       <OrderHeader
-        order={{
-          ...data.order,
-          products_count: products.length,
-        }}
+        order={data.order}
+        products={data.products ?? []}
       />
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <div className="space-y-6 xl:col-span-2">
           <OrderInfoCard order={data.order} />
 
-          <OrderProductsCard products={products} />
+          <OrderObservationCard order={data.order} />
+
+          <OrderProductsCard
+            products={data.products ?? []}
+          />
+
+          <OrderImagesCard
+            pedidoId={data.order.pedido_id}
+          />
         </div>
+
 
         <div className="space-y-6">
           <OrderFinanceCard order={data.order} />

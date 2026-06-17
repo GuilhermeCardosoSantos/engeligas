@@ -14,12 +14,18 @@ import OrderEditProductsCard from "@/components/orders/edit/OrderEditProductsCar
 
 import { useGetOrderById } from "@/hooks/order/useGetOrderById";
 import { useUpdateOrder } from "@/hooks/order/useUpdateOrder";
+import OrderEditObservationCard from "./OrderEditObservationCard";
+
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function EditOrder() {
   const params = useParams<{
     id: string;
   }>();
 
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const { data, isLoading, error } =
     useGetOrderById(Number(params.id));
 
@@ -29,17 +35,31 @@ export default function EditOrder() {
     React.useState<any>(null);
 
   const handleSave = async () => {
+    if (!form) {
+      return;
+    }
+
     try {
       await updateOrder.mutateAsync(form);
+
+      await queryClient.invalidateQueries({
+        queryKey: ["order", form.id],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["orders"],
+      });
 
       toast.success(
         "Pedido atualizado com sucesso."
       );
+
+      router.replace(`/orders/${form.id}`);
     } catch (error) {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Erro ao atualizar."
+          : "Erro ao atualizar pedido."
       );
     }
   };
@@ -69,6 +89,8 @@ export default function EditOrder() {
 
       metodo_pagamento:
         data.order.metodo_pagamento,
+
+      observacao: data.order.observacao
     });
   }, [data]);
 
@@ -118,6 +140,11 @@ export default function EditOrder() {
           />
         </div>
       </div>
+
+      <OrderEditObservationCard
+        form={form}
+        setForm={setForm}
+      />
 
       <OrderEditProductsCard
         products={data.products ?? []}

@@ -205,6 +205,68 @@ GetSyncStatus = async () => {
     }
 };
 
+FindOrderImages = async (
+    pedidoId: number
+  ) => {
+    try {
+      const response = await axios.get(
+        `${this.basePath}images/${pedidoId}`,
+        {
+          withCredentials: true,
+  
+          validateStatus: (status) =>
+            [
+              200,
+              401,
+              404,
+              500,
+            ].includes(status),
+        }
+      );
+  
+      return response;
+    } catch (error) {
+      console.error(
+        "Erro ao buscar imagens do pedido:",
+        error
+      );
+    }
+};
+
+GetProductionPanel = async (
+    dataInicial: string,
+    dataFinal: string
+  ) => {
+    try {
+      const response = await axios.get(
+        `${this.basePath}production-panel`,
+        {
+          withCredentials: true,
+  
+          params: {
+            data_inicial: dataInicial,
+            data_final: dataFinal,
+          },
+  
+          validateStatus: (status) =>
+            [
+              200,
+              401,
+              404,
+              422,
+              500,
+            ].includes(status),
+        }
+      );
+  
+      return response;
+    } catch (error) {
+      console.error(
+        "Erro ao buscar painel de produção:",
+        error
+      );
+    }
+};
 //#endregion
 
 //#region POST
@@ -248,6 +310,47 @@ ImportOrder = async (
             "Erro ao chamar ImportOrder:",
             error
         );
+    }
+};
+
+UploadOrderImages = async (
+    pedidoId: number,
+    files: File[]
+  ) => {
+    try {
+      const formData = new FormData();
+  
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+  
+      const response = await axios.post(
+        `${this.basePath}images/${pedidoId}`,
+        formData,
+        {
+          withCredentials: true,
+  
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+  
+          validateStatus: (status) =>
+            [
+              200,
+              401,
+              404,
+              422,
+              500,
+            ].includes(status),
+        }
+      );
+  
+      return response;
+    } catch (error) {
+      console.error(
+        "Erro ao enviar imagens do pedido:",
+        error
+      );
     }
 };
 
@@ -321,6 +424,35 @@ UpdateProduct = async (
 
 
 // #region DELETE
+
+DeleteOrderImage = async (
+    pedidoId: number,
+    filename: string
+  ) => {
+    try {
+      const response = await axios.delete(
+        `${this.basePath}image/${pedidoId}/${encodeURIComponent(filename)}`,
+        {
+          withCredentials: true,
+  
+          validateStatus: (status) =>
+            [
+              200,
+              401,
+              404,
+              500,
+            ].includes(status),
+        }
+      );
+  
+      return response;
+    } catch (error) {
+      console.error(
+        "Erro ao remover imagem do pedido:",
+        error
+      );
+    }
+};
 
 DeleteOrder = async (
     id: number
